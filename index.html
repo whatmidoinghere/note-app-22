@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-sticky-note"></i> Notes App</h1>
+            <p>Your thoughts, organized and always with you</p>
+        </header>
+        
+        <div class="app-controls">
+            <input type="text" id="search" placeholder="Search notes...">
+            <button id="new-note-btn"><i class="fas fa-plus"></i> New Note</button>
+        </div>
+        
+        <div class="notes-container">
+            <div class="note">
+                <div class="note-header">
+                    <input type="text" class="note-title" value="Welcome Note">
+                    <div class="note-actions">
+                        <button class="save-btn"><i class="fas fa-save"></i></button>
+                        <button class="delete-btn"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+                <textarea class="note-content">This is your first note! You can edit me by clicking on the text. Try adding more notes using the button above!</textarea>
+                <div class="note-footer">
+                    <span class="note-date">Created: Just now</span>
+                    <span class="note-status">Edited</span>
+                </div>
+            </div>
+            
+            <div class="note">
+                <div class="note-header">
+                    <input type="text" class="note-title" value="Shopping List">
+                    <div class="note-actions">
+                        <button class="save-btn"><i class="fas fa-save"></i></button>
+                        <button class="delete-btn"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+                <textarea class="note-content">- Milk\n- Eggs\n- Bread\n- Fruits\n- Coffee</textarea>
+                <div class="note-footer">
+                    <span class="note-date">Created: Today</span>
+                    <span class="note-status">Saved</span>
+                </div>
+            </div>
+            
+            <div class="note">
+                <div class="note-header">
+                    <input type="text" class="note-title" value="Ideas">
+                    <div class="note-actions">
+                        <button class="save-btn"><i class="fas fa-save"></i></button>
+                        <button class="delete-btn"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+                <textarea class="note-content">Project ideas:\n- Weather app\n- Expense tracker\n- Recipe book\n- Fitness planner</textarea>
+                <div class="note-footer">
+                    <span class="note-date">Created: Yesterday</span>
+                    <span class="note-status">Saved</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const newNoteBtn = document.getElementById('new-note-btn');
+            const notesContainer = document.querySelector('.notes-container');
+            const searchInput = document.getElementById('search');
+            
+            // Load notes from localStorage if available
+            loadNotes();
+            
+            // Add new note
+            newNoteBtn.addEventListener('click', createNewNote);
+            
+            // Search functionality
+            searchInput.addEventListener('input', searchNotes);
+            
+            // Set up event delegation for note actions
+            notesContainer.addEventListener('click', function(e) {
+                if (e.target.classList.contains('delete-btn') || 
+                    e.target.parentElement.classList.contains('delete-btn')) {
+                    deleteNote(e.target.closest('.note'));
+                } else if (e.target.classList.contains('save-btn') || 
+                          e.target.parentElement.classList.contains('save-btn')) {
+                    saveNote(e.target.closest('.note'));
+                }
+            });
+            
+            // Auto-resize textareas
+            notesContainer.addEventListener('input', function(e) {
+                if (e.target.classList.contains('note-content')) {
+                    autoResizeTextarea(e.target);
+                    // Mark as edited
+                    e.target.closest('.note').querySelector('.note-status').textContent = 'Edited';
+                } else if (e.target.classList.contains('note-title')) {
+                    e.target.closest('.note').querySelector('.note-status').textContent = 'Edited';
+                }
+            });
+            
+            function createNewNote() {
+                const noteElement = document.createElement('div');
+                noteElement.className = 'note';
+                noteElement.innerHTML = `
+                    <div class="note-header">
+                        <input type="text" class="note-title" placeholder="Note Title">
+                        <div class="note-actions">
+                            <button class="save-btn"><i class="fas fa-save"></i></button>
+                            <button class="delete-btn"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <textarea class="note-content" placeholder="Start writing your note here..."></textarea>
+                    <div class="note-footer">
+                        <span class="note-date">Created: Just now</span>
+                        <span class="note-status">New</span>
+                    </div>
+                `;
+                
+                notesContainer.prepend(noteElement);
+                
+                // Focus on the title
+                noteElement.querySelector('.note-title').focus();
+                
+                // Save the new note
+                saveNotes();
+            }
+            
+            function deleteNote(noteElement) {
+                noteElement.classList.add('fade-out');
+                
+                setTimeout(() => {
+                    noteElement.remove();
+                    saveNotes();
+                }, 300);
+            }
+            
+            function saveNote(noteElement) {
+                noteElement.querySelector('.note-status').textContent = 'Saving...';
+                
+                // Simulate saving delay
+                setTimeout(() => {
+                    noteElement.querySelector('.note-status').textContent = 'Saved';
+                    saveNotes();
+                }, 500);
+            }
+            
+            function saveNotes() {
+                const notes = [];
+                document.querySelectorAll('.note').forEach(note => {
+                    notes.push({
+                        title: note.querySelector('.note-title').value,
+                        content: note.querySelector('.note-content').value,
+                        date: note.querySelector('.note-date').textContent,
+                        status: note.querySelector('.note-status').textContent
+                    });
+                });
+                
+                localStorage.setItem('notes', JSON.stringify(notes));
+            }
+            
+            function loadNotes() {
+                const savedNotes = JSON.parse(localStorage.getItem('notes'));
+                
+                if (savedNotes && savedNotes.length > 0) {
+                    notesContainer.innerHTML = '';
+                    
+                    savedNotes.forEach(note => {
+                        const noteElement = document.createElement('div');
+                        noteElement.className = 'note';
+                        noteElement.innerHTML = `
+                            <div class="note-header">
+                                <input type="text" class="note-title" value="${note.title}">
+                                <div class="note-actions">
+                                    <button class="save-btn"><i class="fas fa-save"></i></button>
+                                    <button class="delete-btn"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <textarea class="note-content">${note.content}</textarea>
+                            <div class="note-footer">
+                                <span class="note-date">${note.date}</span>
+                                <span class="note-status">${note.status}</span>
+                            </div>
+                        `;
+                        
+                        notesContainer.appendChild(noteElement);
+                    });
+                }
+            }
+            
+            function searchNotes() {
+                const searchTerm = searchInput.value.toLowerCase();
+                
+                document.querySelectorAll('.note').forEach(note => {
+                    const title = note.querySelector('.note-title').value.toLowerCase();
+                    const content = note.querySelector('.note-content').value.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || content.includes(searchTerm)) {
+                        note.style.display = 'flex';
+                    } else {
+                        note.style.display = 'none';
+                    }
+                });
+            }
+            
+            function autoResizeTextarea(textarea) {
+                textarea.style.height = 'auto';
+                textarea.style.height = (textarea.scrollHeight) + 'px';
+            }
+        });
+    </script>
+</body>
+</html>
