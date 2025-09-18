@@ -73,7 +73,7 @@
             const notesContainer = document.querySelector('.notes-container');
             const searchInput = document.getElementById('search');
             
-            // Load notes from localStorage if available
+            
             loadNotes();
             
             // Add new note
@@ -93,7 +93,7 @@
                 }
             });
             
-            // Auto-resize textareas
+            // Auto-resize 
             notesContainer.addEventListener('input', function(e) {
                 if (e.target.classList.contains('note-content')) {
                     autoResizeTextarea(e.target);
@@ -215,4 +215,5 @@
         });
     </script>
 </body>
+
 </html>
