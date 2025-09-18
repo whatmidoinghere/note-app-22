@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PyNotes - Python-Powered Note App</title>
+    <title>Notes App</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://pyscript.net/releases/2023.11.1/core.css">
-    <script type="module" src="https://pyscript.net/releases/2023.11.1/core.js"></script>
     <style>
         * {
             margin: 0;
@@ -16,7 +14,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -26,35 +24,26 @@
 
         .container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1000px;
             background-color: white;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            height: 95vh;
+            height: 90vh;
         }
 
         header {
-            background: linear-gradient(to right, #1a2a6c, #b21f1f);
+            background: linear-gradient(to right, #6a11cb, #2575fc);
             color: white;
             padding: 20px;
             text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
         h1 {
             font-size: 2.2rem;
-            margin-bottom: 0;
+            margin-bottom: 10px;
         }
 
         .app-controls {
@@ -63,13 +52,10 @@
             padding: 20px;
             background-color: #f5f5f5;
             border-bottom: 1px solid #ddd;
-            flex-wrap: wrap;
-            gap: 10px;
         }
 
         #search {
             flex: 1;
-            min-width: 200px;
             padding: 12px 15px;
             border: 1px solid #ddd;
             border-radius: 30px;
@@ -77,8 +63,8 @@
             margin-right: 10px;
         }
 
-        .btn {
-            background: linear-gradient(to right, #1a2a6c, #b21f1f);
+        #new-note-btn {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
             color: white;
             border: none;
             padding: 12px 25px;
@@ -86,39 +72,20 @@
             cursor: pointer;
             font-weight: bold;
             transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
-        .btn:hover {
-            background: linear-gradient(to right, #15225e, #9c1a1a);
+        #new-note-btn:hover {
+            background: linear-gradient(to right, #550cb0, #1c64e0);
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
-        .main-content {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
-
-        .notes-sidebar {
-            width: 300px;
-            background-color: #f9f9f9;
-            border-right: 1px solid #eee;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
         .notes-container {
-            flex: 1;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
             padding: 20px;
             overflow-y: auto;
-            background-color: #f0f2f5;
         }
 
         .note {
@@ -128,7 +95,7 @@
             padding: 15px;
             display: flex;
             flex-direction: column;
-            height: 300px;
+            height: 250px;
             transition: transform 0.3s;
             border: 1px solid #eee;
         }
@@ -171,7 +138,7 @@
         }
 
         .note-actions button:hover {
-            color: #1a2a6c;
+            color: #2575fc;
         }
 
         .note-content {
@@ -182,7 +149,6 @@
             line-height: 1.5;
             background: transparent;
             color: #444;
-            font-family: 'Consolas', monospace;
         }
 
         .note-content:focus, .note-title:focus {
@@ -199,80 +165,10 @@
             font-size: 0.8rem;
         }
 
-        .python-output {
-            background-color: #2d2d2d;
-            color: #f8f8f2;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
-            font-family: 'Consolas', monospace;
-            font-size: 0.9rem;
-            max-height: 120px;
-            overflow-y: auto;
-        }
-
-        .python-output.success {
-            border-left: 4px solid #4CAF50;
-        }
-
-        .python-output.error {
-            border-left: 4px solid #f44336;
-        }
-
-        .run-btn {
-            background: linear-gradient(to right, #1a2a6c, #b21f1f);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            margin-top: 5px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .run-btn:hover {
-            background: linear-gradient(to right, #15225e, #9c1a1a);
-        }
-
-        .sidebar-title {
-            margin-bottom: 15px;
-            color: #1a2a6c;
-            font-size: 1.2rem;
-        }
-
-        .note-list {
-            list-style: none;
-        }
-
-        .note-item {
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 8px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .note-item:hover {
-            background-color: #e9ecef;
-        }
-
-        .note-item.active {
-            background-color: #1a2a6c;
-            color: white;
-        }
-
         .empty-state {
             text-align: center;
             padding: 40px;
             color: #777;
-            grid-column: 1 / -1;
-            align-self: center;
         }
 
         .empty-state i {
@@ -287,15 +183,8 @@
         }
 
         @media (max-width: 768px) {
-            .main-content {
-                flex-direction: column;
-            }
-            
-            .notes-sidebar {
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid #eee;
-                max-height: 200px;
+            .container {
+                height: 95vh;
             }
             
             .notes-container {
@@ -303,7 +192,7 @@
             }
             
             .note {
-                height: 250px;
+                height: 200px;
             }
         }
     </style>
@@ -311,116 +200,58 @@
 <body>
     <div class="container">
         <header>
-            <div class="logo">
-                <i class="fab fa-python fa-2x"></i>
-                <h1>PyNotes</h1>
-            </div>
-            <p>Python-powered note taking</p>
+            <h1><i class="fas fa-sticky-note"></i> Notes App</h1>
+            <p>Your thoughts, organized and always with you</p>
         </header>
         
         <div class="app-controls">
             <input type="text" id="search" placeholder="Search notes...">
-            <button id="new-note-btn" class="btn"><i class="fas fa-plus"></i> New Note</button>
-            <button id="python-btn" class="btn"><i class="fab fa-python"></i> Run Python</button>
+            <button id="new-note-btn"><i class="fas fa-plus"></i> New Note</button>
         </div>
         
-        <div class="main-content">
-            <div class="notes-sidebar">
-                <h3 class="sidebar-title">Your Notes</h3>
-                <ul class="note-list">
-                    <li class="note-item active">Welcome Note</li>
-                    <li class="note-item">Shopping List</li>
-                    <li class="note-item">Math Calculations</li>
-                    <li class="note-item">Python Examples</li>
-                </ul>
+        <div class="notes-container">
+            <div class="note">
+                <div class="note-header">
+                    <input type="text" class="note-title" value="Welcome Note">
+                    <div class="note-actions">
+                        <button class="save-btn"><i class="fas fa-save"></i></button>
+                        <button class="delete-btn"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+                <textarea class="note-content">This is your first note! You can edit me by clicking on the text. Try adding more notes using the button above!</textarea>
+                <div class="note-footer">
+                    <span class="note-date">Created: Just now</span>
+                    <span class="note-status">Edited</span>
+                </div>
             </div>
             
-            <div class="notes-container">
-                <div class="note">
-                    <div class="note-header">
-                        <input type="text" class="note-title" value="Welcome Note">
-                        <div class="note-actions">
-                            <button class="save-btn"><i class="fas fa-save"></i></button>
-                            <button class="delete-btn"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
-                    <textarea class="note-content">Welcome to PyNotes!
-
-This is a note-taking app with Python integration.
-
-Try creating a new note with the button above!</textarea>
-                    <div class="note-footer">
-                        <span class="note-date">Created: Just now</span>
-                        <span class="note-status">Saved</span>
+            <div class="note">
+                <div class="note-header">
+                    <input type="text" class="note-title" value="Shopping List">
+                    <div class="note-actions">
+                        <button class="save-btn"><i class="fas fa-save"></i></button>
+                        <button class="delete-btn"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>
-                
-                <div class="note">
-                    <div class="note-header">
-                        <input type="text" class="note-title" value="Math Calculations">
-                        <div class="note-actions">
-                            <button class="save-btn"><i class="fas fa-save"></i></button>
-                            <button class="delete-btn"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
-                    <textarea class="note-content"># Python math example
-import math
-
-# Calculate circle area
-radius = 5
-area = math.pi * radius ** 2
-print(f"Area of circle with radius {radius} is {area:.2f}")
-
-# Calculate factorial
-num = 7
-factorial = math.factorial(num)
-print(f"Factorial of {num} is {factorial}")</textarea>
-                    <div class="note-footer">
-                        <span class="note-date">Created: Today</span>
-                        <span class="note-status">Saved</span>
-                    </div>
-                    <button class="run-btn"><i class="fas fa-play"></i> Run Python Code</button>
-                    <div class="python-output success">
-Area of circle with radius 5 is 78.54
-Factorial of 7 is 5040
+                <textarea class="note-content">- Milk\n- Eggs\n- Bread\n- Fruits\n- Coffee</textarea>
+                <div class="note-footer">
+                    <span class="note-date">Created: Today</span>
+                    <span class="note-status">Saved</span>
+                </div>
+            </div>
+            
+            <div class="note">
+                <div class="note-header">
+                    <input type="text" class="note-title" value="Ideas">
+                    <div class="note-actions">
+                        <button class="save-btn"><i class="fas fa-save"></i></button>
+                        <button class="delete-btn"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>
-                
-                <div class="note">
-                    <div class="note-header">
-                        <input type="text" class="note-title" value="Python Examples">
-                        <div class="note-actions">
-                            <button class="save-btn"><i class="fas fa-save"></i></button>
-                            <button class="delete-btn"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
-                    <textarea class="note-content"># Python list comprehension example
-numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-squares = [x**2 for x in numbers]
-print("Squares:", squares)
-
-# Filter even numbers
-evens = [x for x in numbers if x % 2 == 0]
-print("Even numbers:", evens)
-
-# Fibonacci function
-def fibonacci(n):
-    a, b = 0, 1
-    for _ in range(n):
-        yield a
-        a, b = b, a + b
-
-print("Fibonacci sequence:", list(fibonacci(10)))</textarea>
-                    <div class="note-footer">
-                        <span class="note-date">Created: Yesterday</span>
-                        <span class="note-status">Edited</span>
-                    </div>
-                    <button class="run-btn"><i class="fas fa-play"></i> Run Python Code</button>
-                    <div class="python-output success">
-Squares: [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
-Even numbers: [2, 4, 6, 8, 10]
-Fibonacci sequence: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
-                    </div>
+                <textarea class="note-content">Project ideas:\n- Weather app\n- Expense tracker\n- Recipe book\n- Fitness planner</textarea>
+                <div class="note-footer">
+                    <span class="note-date">Created: Yesterday</span>
+                    <span class="note-status">Saved</span>
                 </div>
             </div>
         </div>
@@ -429,7 +260,6 @@ Fibonacci sequence: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const newNoteBtn = document.getElementById('new-note-btn');
-            const pythonBtn = document.getElementById('python-btn');
             const notesContainer = document.querySelector('.notes-container');
             const searchInput = document.getElementById('search');
             
@@ -438,9 +268,6 @@ Fibonacci sequence: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
             
             // Add new note
             newNoteBtn.addEventListener('click', createNewNote);
-            
-            // Run Python code
-            pythonBtn.addEventListener('click', runAllPython);
             
             // Search functionality
             searchInput.addEventListener('input', searchNotes);
@@ -453,9 +280,6 @@ Fibonacci sequence: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
                 } else if (e.target.classList.contains('save-btn') || 
                           e.target.parentElement.classList.contains('save-btn')) {
                     saveNote(e.target.closest('.note'));
-                } else if (e.target.classList.contains('run-btn') || 
-                          e.target.parentElement.classList.contains('run-btn')) {
-                    runPython(e.target.closest('.note'));
                 }
             });
             
@@ -486,8 +310,6 @@ Fibonacci sequence: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
                         <span class="note-date">Created: Just now</span>
                         <span class="note-status">New</span>
                     </div>
-                    <button class="run-btn"><i class="fas fa-play"></i> Run Python Code</button>
-                    <div class="python-output"></div>
                 `;
                 
                 notesContainer.prepend(noteElement);
@@ -529,11 +351,11 @@ Fibonacci sequence: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
                     });
                 });
                 
-                localStorage.setItem('pynotes', JSON.stringify(notes));
+                localStorage.setItem('notes', JSON.stringify(notes));
             }
             
             function loadNotes() {
-                const savedNotes = JSON.parse(localStorage.getItem('pynotes'));
+                const savedNotes = JSON.parse(localStorage.getItem('notes'));
                 
                 if (savedNotes && savedNotes.length > 0) {
                     notesContainer.innerHTML = '';
@@ -554,8 +376,6 @@ Fibonacci sequence: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
                                 <span class="note-date">${note.date}</span>
                                 <span class="note-status">${note.status}</span>
                             </div>
-                            <button class="run-btn"><i class="fas fa-play"></i> Run Python Code</button>
-                            <div class="python-output"></div>
                         `;
                         
                         notesContainer.appendChild(noteElement);
@@ -574,46 +394,6 @@ Fibonacci sequence: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
                         note.style.display = 'flex';
                     } else {
                         note.style.display = 'none';
-                    }
-                });
-            }
-            
-            function runPython(noteElement) {
-                const code = noteElement.querySelector('.note-content').value;
-                const outputElement = noteElement.querySelector('.python-output');
-                
-                outputElement.textContent = "Running Python code...";
-                outputElement.className = "python-output";
-                
-                try {
-                    // This is where PyScript would execute the code
-                    // For demonstration, we'll simulate execution
-                    setTimeout(() => {
-                        if (code.includes("print(")) {
-                            if (code.includes("radius = 5")) {
-                                outputElement.textContent = "Area of circle with radius 5 is 78.54\nFactorial of 7 is 5040";
-                            } else if (code.includes("numbers = [1, 2, 3")) {
-                                outputElement.textContent = "Squares: [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]\nEven numbers: [2, 4, 6, 8, 10]\nFibonacci sequence: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]";
-                            } else {
-                                outputElement.textContent = "Hello, PyNotes!\nThis is Python output.";
-                            }
-                            outputElement.classList.add("success");
-                        } else {
-                            outputElement.textContent = "No output. Try using print() to see results.";
-                            outputElement.classList.add("error");
-                        }
-                    }, 1000);
-                } catch (error) {
-                    outputElement.textContent = `Error: ${error.message}`;
-                    outputElement.classList.add("error");
-                }
-            }
-            
-            function runAllPython() {
-                document.querySelectorAll('.note').forEach(note => {
-                    const code = note.querySelector('.note-content').value;
-                    if (code.includes("import ") || code.includes("print(")) {
-                        runPython(note);
                     }
                 });
             }
